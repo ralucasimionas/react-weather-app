@@ -1,23 +1,120 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
+import {
+  getCurrentWeatherEndpoint,
+  getWeatherForecastEndpoint,
+} from "./api/endpoints";
+
+import { CurrentWeather } from "./components/CurrentWeather";
+import { getDayOfWeek, getMonth } from "./utils/hooks/date";
+// import { useFetch } from "./utils/hooks/useFetch";
+import { windToKmPerHour } from "./utils/hooks/weather";
+import background from "./images/background_image.jpg";
+import { CitySearch } from "./components/CitySearch";
+import { WeatherForecastList } from "./components/WeatherForecastList";
+import { useFetch } from "./utils/hooks/useFetch";
 
 function App() {
+  const [city, setCity] = useState("Oradea");
+  const [updatedCity, setUpdatedCity] = useState(city);
+  const [weatherDetails, setWeatherDetails] = useState([]);
+  const [forecastWeatherDetails, setForecastWeatherDetails] = useState([]);
+
+  const currentWeatherEndpoint = getCurrentWeatherEndpoint(updatedCity);
+  console.log("currentWeatherEndpoint", currentWeatherEndpoint);
+
+  const forecastWeatherEndpoint = getWeatherForecastEndpoint(updatedCity);
+  console.log("forecastWeatherEndpoint", forecastWeatherEndpoint);
+
+  useEffect(() => {
+    fetch(currentWeatherEndpoint)
+      .then((response) => response.json())
+      .then((json) => {
+        setWeatherDetails(json);
+        // console.log("weatherDetails", weatherDetails);
+      });
+  }, [currentWeatherEndpoint]);
+
+  // setWeatherDetails(useFetch(currentWeatherEndpoint));
+
+  const { name, dt, main, weather, wind, cod } = weatherDetails;
+
+  const currentWeatherDetails = {};
+  if (cod === 200) {
+    currentWeatherDetails.day = getDayOfWeek(dt);
+    currentWeatherDetails.date = getMonth(dt);
+    currentWeatherDetails.cityName = name;
+    currentWeatherDetails.temperature = Math.trunc(main.temp);
+    currentWeatherDetails.windSpeed = Math.round(windToKmPerHour(wind.speed));
+    currentWeatherDetails.maxTemperature = Math.trunc(main.temp_max);
+    currentWeatherDetails.minTemperature = Math.trunc(main.temp_min);
+    currentWeatherDetails.weatherDescription = weather[0].description;
+  }
+  console.log("current Weather Details", currentWeatherDetails);
+
+  useEffect(() => {
+    fetch(forecastWeatherEndpoint)
+      .then((response) => response.json())
+      .then((json) => {
+        const dailyForecastData = json.list.filter((forecast, index) => {
+          return index % 8 === 0;
+        });
+        setForecastWeatherDetails(dailyForecastData);
+        // console.log("forecast weatherDetails", forecastWeatherDetails);
+      });
+  }, [forecastWeatherEndpoint]);
+
+
+
+  console.log("forecast weather details", forecastWeatherDetails);
+
+
+  const handleChange = (e) => {
+    setCity(e.target.value);
+    e.preventDefault();
+    console.log("salut din handleChange");
+  };
+
+  const handleClick = () => {
+    setUpdatedCity(city);
+    console.log("salut din handleClick", updatedCity, city);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div
+        className="Weather"
+        style={{
+          backgroundImage: `url(${background})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <CitySearch
+          handleChange={handleChange}
+          handleClick={handleClick}
+        ></CitySearch>
+        {cod === 200 && forecastWeatherDetails ? (
+          <div>
+            <CurrentWeather
+              day={currentWeatherDetails.day}
+              date={`${currentWeatherDetails.date[0]} ${currentWeatherDetails.date[1]}`}
+              city={currentWeatherDetails.cityName}
+              temp={currentWeatherDetails.temperature}
+              maxTemp={currentWeatherDetails.maxTemperature}
+              wind={currentWeatherDetails.windSpeed}
+              description={currentWeatherDetails.weatherDescription}
+            ></CurrentWeather>
+
+            <WeatherForecastList
+              forecastWeatherDetails={forecastWeatherDetails}
+            />
+            {/* <div>{forecastItems}</div> */}
+          </div>
+        ) : (
+          <p>The city you are searching for doesn't exist.</p>
+        )}
+      </div>
     </div>
   );
 }
