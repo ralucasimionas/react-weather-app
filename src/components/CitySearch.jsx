@@ -1,16 +1,17 @@
+import styles from "./CitySearch.module.css";
 export function CitySearch(props) {
   const { handleChange, handleClick } = props;
 
   return (
-    <div>
+    <div className={styles.Search}>
       <input
+        className={styles.CityInput}
         placeholder="enter your city"
-        type="text"
         onChange={handleChange}
       ></input>
 
       <button
-        className="getWeather"
+        className={styles.GetWeatherButton}
         type="submit"
         value="submit"
         onClick={handleClick}

@@ -1,0 +1,42 @@
+.CurrentWeather {
+  margin: auto;
+  padding: 80px 0px 80px 0px;
+  margin-top: 20px;
+
+  display: flex;
+  background-color: aliceblue;
+  opacity: 0.7;
+  border-radius: 10px;
+  width: 60%;
+
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.ShortInfo {
+  text-align: center;
+}
+
+p {
+  font-size: 20px;
+  padding-bottom: 5px;
+}
+
+h4 {
+  font-size: 25px;
+  font-weight: bold;
+  margin: 1px 0px 1px 0px;
+}
+
+h2 {
+  font-size: 50px;
+  margin: 1px 0px 16px 0px;
+}
+
+.ShortDescription {
+  align-items: center;
+}
+
+.ShortDescription p:first-child {
+  font-weight: bold;
+}

@@ -6,19 +6,19 @@ import {
 } from "./api/endpoints";
 
 import { CurrentWeather } from "./components/CurrentWeather";
-import { getDayOfWeek, getMonth } from "./utils/hooks/date";
-// import { useFetch } from "./utils/hooks/useFetch";
-import { windToKmPerHour } from "./utils/hooks/weather";
+import { getDayOfWeek, getMonth } from "./utils/date";
+
+import { windToKmPerHour } from "./utils/weather";
 import background from "./images/background_image.jpg";
 import { CitySearch } from "./components/CitySearch";
 import { WeatherForecastList } from "./components/WeatherForecastList";
-import { useFetch } from "./utils/hooks/useFetch";
 
 function App() {
   const [city, setCity] = useState("Oradea");
   const [updatedCity, setUpdatedCity] = useState(city);
   const [weatherDetails, setWeatherDetails] = useState([]);
   const [forecastWeatherDetails, setForecastWeatherDetails] = useState([]);
+  const [input, setInput] = useState("");
 
   const currentWeatherEndpoint = getCurrentWeatherEndpoint(updatedCity);
   console.log("currentWeatherEndpoint", currentWeatherEndpoint);
@@ -64,10 +64,11 @@ function App() {
       });
   }, [forecastWeatherEndpoint]);
 
-
-
   console.log("forecast weather details", forecastWeatherDetails);
-
+  const forecastDetails = forecastWeatherDetails.map((forecast) => {
+    return [forecast, forecast.dt];
+  });
+  console.log("forecastDetails", forecastDetails);
 
   const handleChange = (e) => {
     setCity(e.target.value);
@@ -77,6 +78,7 @@ function App() {
 
   const handleClick = () => {
     setUpdatedCity(city);
+    setInput("");
     console.log("salut din handleClick", updatedCity, city);
   };
 
@@ -88,14 +90,17 @@ function App() {
           backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
+          backgroundPosition: "center center",
+          backgroundAttachment: "fixed",
+          height: "100vh",
         }}
       >
         <CitySearch
           handleChange={handleChange}
           handleClick={handleClick}
-        ></CitySearch>
+        ></CitySearch>{" "}
         {cod === 200 && forecastWeatherDetails ? (
-          <div>
+          <div className="Weather">
             <CurrentWeather
               day={currentWeatherDetails.day}
               date={`${currentWeatherDetails.date[0]} ${currentWeatherDetails.date[1]}`}
@@ -106,9 +111,7 @@ function App() {
               description={currentWeatherDetails.weatherDescription}
             ></CurrentWeather>
 
-            <WeatherForecastList
-              forecastWeatherDetails={forecastWeatherDetails}
-            />
+            <WeatherForecastList forecastDetails={forecastDetails} />
             {/* <div>{forecastItems}</div> */}
           </div>
         ) : (

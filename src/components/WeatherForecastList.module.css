@@ -1,0 +1,23 @@
+.Row {
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+}
+
+.Col {
+  background-color: #c3f1dd;
+  opacity: 1;
+  border-radius: 10px;
+
+  margin-top: -80px;
+  z-index: 1;
+
+  align-items: center;
+
+  width: 17%;
+}
+
+.Col:hover {
+  background-color: #99f8d1;
+}

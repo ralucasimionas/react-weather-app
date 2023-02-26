@@ -1,11 +1,17 @@
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { DailyWeatherForecast } from "./DailyWeatherForecast";
+import styles from "./WeatherForecastList.module.css";
 
-export function WeatherForecastList({ forecastWeatherDetails }) {
-  const forecastDetails = forecastWeatherDetails.map((forecast) => {
-    return <DailyWeatherForecast forecast={forecast} key={forecast.dt} />;
-  });
-  console.log("forecastDetails", forecastDetails);
-
-  return <Container>{forecastDetails}</Container>;
+export function WeatherForecastList({ forecastDetails }) {
+  return (
+    <Container>
+      <Row className={styles.Row}>
+        {forecastDetails.map((forecast) => (
+          <Col className={styles.Col}>
+            <DailyWeatherForecast forecast={forecast} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
+  );
 }
