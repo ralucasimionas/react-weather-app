@@ -1,29 +1,46 @@
 .Search {
   margin: auto;
   padding-top: 80px;
+  width: 50%;
 
   display: flex;
-  justify-content: space-evenly;
-
-  height: 30px;
-  width: 30%;
+  flex-wrap: wrap;
+  justify-content: center;
 
   opacity: 0.7;
 }
 
 .GetWeatherButton,
 .CityInput {
+  outline: none;
   border: 2px solid #000000;
   border-radius: 5px;
   font-size: 15px;
   font-weight: bold;
   text-align: center;
   padding: 0px 5px 0px 5px;
-  width: 100%;
+
   display: "flex";
 }
 
-.GetWeatherButton:hover {
-  background-color: #99f8d1;
-  transition-duration: 0.2s;
+.CityInput {
+  padding: 10px;
+  display: flex;
+}
+.GetWeatherButton {
+  padding: 10px;
+}
+
+@media (hover: hover) {
+  .GetWeatherButton:hover {
+    background-color: #99f8d1;
+    transition-duration: 0.1s;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .Search {
+    padding-top: 40px;
+  }
 }

@@ -4,10 +4,10 @@ import styles from "./WeatherForecastList.module.css";
 
 export function WeatherForecastList({ forecastDetails }) {
   return (
-    <Container>
+    <Container className={styles.Container}>
       <Row className={styles.Row}>
         {forecastDetails.map((forecast) => (
-          <Col className={styles.Col}>
+          <Col className={styles.Col} key={forecast}>
             <DailyWeatherForecast forecast={forecast} />
           </Col>
         ))}

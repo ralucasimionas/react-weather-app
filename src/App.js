@@ -1,15 +1,13 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import background from "./images/background_image.jpg";
+import { useEffect, useRef, useState } from "react";
 import {
   getCurrentWeatherEndpoint,
   getWeatherForecastEndpoint,
 } from "./api/endpoints";
-
-import { CurrentWeather } from "./components/CurrentWeather";
 import { getDayOfWeek, getMonth } from "./utils/date";
-
 import { windToKmPerHour } from "./utils/weather";
-import background from "./images/background_image.jpg";
+import { CurrentWeather } from "./components/CurrentWeather";
 import { CitySearch } from "./components/CitySearch";
 import { WeatherForecastList } from "./components/WeatherForecastList";
 
@@ -18,13 +16,14 @@ function App() {
   const [updatedCity, setUpdatedCity] = useState(city);
   const [weatherDetails, setWeatherDetails] = useState([]);
   const [forecastWeatherDetails, setForecastWeatherDetails] = useState([]);
-  const [input, setInput] = useState("");
+  const inputRef = useRef(null);
+  const placeholder = "enter your city";
 
   const currentWeatherEndpoint = getCurrentWeatherEndpoint(updatedCity);
-  console.log("currentWeatherEndpoint", currentWeatherEndpoint);
+  // console.log("currentWeatherEndpoint", currentWeatherEndpoint);
 
   const forecastWeatherEndpoint = getWeatherForecastEndpoint(updatedCity);
-  console.log("forecastWeatherEndpoint", forecastWeatherEndpoint);
+  // console.log("forecastWeatherEndpoint", forecastWeatherEndpoint);
 
   useEffect(() => {
     fetch(currentWeatherEndpoint)
@@ -50,7 +49,7 @@ function App() {
     currentWeatherDetails.minTemperature = Math.trunc(main.temp_min);
     currentWeatherDetails.weatherDescription = weather[0].description;
   }
-  console.log("current Weather Details", currentWeatherDetails);
+  // console.log("current Weather Details", currentWeatherDetails);
 
   useEffect(() => {
     fetch(forecastWeatherEndpoint)
@@ -64,22 +63,28 @@ function App() {
       });
   }, [forecastWeatherEndpoint]);
 
-  console.log("forecast weather details", forecastWeatherDetails);
+  // console.log("forecast weather details", forecastWeatherDetails);
   const forecastDetails = forecastWeatherDetails.map((forecast) => {
     return [forecast, forecast.dt];
   });
-  console.log("forecastDetails", forecastDetails);
+  // console.log("forecastDetails", forecastDetails);
 
-  const handleChange = (e) => {
-    setCity(e.target.value);
-    e.preventDefault();
-    console.log("salut din handleChange");
+  const handleChange = (event) => {
+    event.preventDefault();
+    setCity(event.target.value);
   };
 
   const handleClick = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
     setUpdatedCity(city);
-    setInput("");
-    console.log("salut din handleClick", updatedCity, city);
+  };
+
+  const handleBlur = (event) => {
+    if (event.target.value === "") {
+      event.target.value = placeholder;
+    }
   };
 
   return (
@@ -90,14 +95,15 @@ function App() {
           backgroundImage: `url(${background})`,
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: "center center",
-          backgroundAttachment: "fixed",
-          height: "100vh",
+          minHeight: "100vh",
+          width: "100%",
         }}
       >
         <CitySearch
           handleChange={handleChange}
           handleClick={handleClick}
+          handleBlur={handleBlur}
+          inputRef={inputRef}
         ></CitySearch>{" "}
         {cod === 200 && forecastWeatherDetails ? (
           <div className="Weather">
@@ -109,14 +115,43 @@ function App() {
               maxTemp={currentWeatherDetails.maxTemperature}
               wind={currentWeatherDetails.windSpeed}
               description={currentWeatherDetails.weatherDescription}
-            ></CurrentWeather>
+            />
 
             <WeatherForecastList forecastDetails={forecastDetails} />
-            {/* <div>{forecastItems}</div> */}
           </div>
         ) : (
-          <p>The city you are searching for doesn't exist.</p>
+          <p
+            style={{
+              margin: "auto",
+              padding: "80px 0px 80px 0px",
+              marginTop: "20px",
+
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+
+              backgroundColor: "#f0f8ff",
+              opacity: "0.7",
+              borderRadius: "10px",
+              width: "60%",
+            }}
+          >
+            The city you are searching for doesn't exist.
+          </p>
         )}
+        <p
+          style={{
+            textAlign: "center",
+            display: "block",
+            position: "fixed",
+            bottom: "0px",
+            left: "0",
+            right: "0",
+            color: "#FFFFFF",
+          }}
+        >
+          Raluca Simionaș © 2023. All rights reserved.
+        </p>
       </div>
     </div>
   );

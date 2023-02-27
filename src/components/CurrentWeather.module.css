@@ -1,10 +1,10 @@
 .CurrentWeather {
   margin: auto;
   padding: 80px 0px 80px 0px;
-  margin-top: 20px;
+  margin-top: 60px;
 
   display: flex;
-  background-color: aliceblue;
+  background-color: #f0f8ff;
   opacity: 0.7;
   border-radius: 10px;
   width: 60%;
@@ -34,9 +34,42 @@ h2 {
 }
 
 .ShortDescription {
+  margin-top: -20px;
   align-items: center;
 }
 
 .ShortDescription p:first-child {
   font-weight: bold;
+}
+
+@media (max-width: 576px) {
+  .CurrentWeather {
+    width: 80%;
+    padding: 50px 0px 50px 0px;
+    margin-top: 20px;
+  }
+
+  p {
+    font-size: 15px;
+    padding-bottom: 5px;
+  }
+
+  h4 {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 1px 0px 1px 0px;
+  }
+
+  h2 {
+    font-size: 30px;
+    margin: 1px 0px 16px 0px;
+  }
+
+  .ShortDescription {
+    align-items: center;
+  }
+
+  .ShortDescription p:first-child {
+    font-weight: bold;
+  }
 }
